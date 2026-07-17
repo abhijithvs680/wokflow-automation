@@ -20,14 +20,13 @@ services:
     environment:
       - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
       - LLM_BASE_URL=${LLM_BASE_URL:-}
+      - LLM_API_KEY=${LLM_API_KEY:-}
       # MONGO_URL / MYSQL_DSN come from the platform secret files below
     secrets:
       - source: mongo-url
         target: mongo-url
       - source: mysql-dsn
         target: mysql-dsn
-      - source: llm-api-key
-        target: llm-api-key
     ports:
       - "5003:5003"          # host access for testing; internal callers use http://workflow-ai:5003
     networks:
@@ -38,8 +37,6 @@ secrets:
     file: ../receiver/secrets/web/mongo.url
   mysql-dsn:
     file: ../receiver/secrets/web/mysql.dsn
-  llm-api-key:
-    file: ./secrets/llm-api-key
 
 networks:
   vizru-network:
