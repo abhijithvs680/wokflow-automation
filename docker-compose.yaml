@@ -34,9 +34,9 @@ services:
 
 secrets:
   mongo-url:
-    file: ../receiver/secrets/web/mongo.url
+    file: /opt/Vizru/Vizru-docker/receiver/secrets/web/mongo.url
   mysql-dsn:
-    file: ../receiver/secrets/web/mysql.dsn
+    file: /opt/Vizru/Vizru-docker/receiver/secrets/web/mysql.dsn
 
 networks:
   vizru-network:
