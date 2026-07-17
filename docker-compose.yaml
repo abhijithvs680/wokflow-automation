@@ -35,4 +35,4 @@ services:
 networks:
   vizru-network:
     external: true
-    name: ${VIZRU_NETWORK:-vizru-docker_vizru-network}
+    name: ${VIZRU_NETWORK:-vizru-network}
