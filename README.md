@@ -27,10 +27,10 @@ docker compose -f workflow-ai/docker-compose.yaml up -d --build
 # service: http://localhost:5003  (inside the network: http://workflow-ai:5003)
 ```
 
-If your platform compose project isn't named `vizru-docker`, set the network:
+If your platform compose project uses a different network name, set it:
 
 ```bash
-docker network ls   # find the *_vizru-network name
+docker network ls   # find the network name
 VIZRU_NETWORK=<name> docker compose -f workflow-ai/docker-compose.yaml up -d
 ```
 

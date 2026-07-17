@@ -1,9 +1,7 @@
 # Separate compose file for the AI workflow generation service.
 #
-# It joins the network created by the main Vizru compose project. Compose
-# prefixes network names with the project name (folder name by default), so
-# the platform's `vizru-network` is actually `vizru-docker_vizru-network`.
-# Override VIZRU_NETWORK if your project name differs:
+# It joins the network created by the main Vizru compose project.
+# Override VIZRU_NETWORK if your project's network name differs:
 #   docker network ls | findstr vizru
 #   VIZRU_NETWORK=<actual-name> docker compose up -d
 #
