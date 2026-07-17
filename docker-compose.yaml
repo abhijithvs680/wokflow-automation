@@ -21,22 +21,16 @@ services:
       - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
       - LLM_BASE_URL=${LLM_BASE_URL:-}
       - LLM_API_KEY=${LLM_API_KEY:-}
-      # MONGO_URL / MYSQL_DSN come from the platform secret files below
-    secrets:
-      - source: mongo-url
-        target: mongo-url
-      - source: mysql-dsn
-        target: mysql-dsn
+      - MONGO_URL=${MONGO_URL:-}
+      - MYSQL_HOST=${MYSQL_HOST:-receiver-mysql}
+      - MYSQL_PORT=${MYSQL_PORT:-3306}
+      - MYSQL_DB=${MYSQL_DB:-vizru}
+      - MYSQL_USER=${MYSQL_USER:-vizru}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-vizru}
     ports:
       - "5003:5003"          # host access for testing; internal callers use http://workflow-ai:5003
     networks:
       - vizru-network
-
-secrets:
-  mongo-url:
-    file: /opt/Vizru/Vizru-docker/receiver/secrets/web/mongo.url
-  mysql-dsn:
-    file: /opt/Vizru/Vizru-docker/receiver/secrets/web/mysql.dsn
 
 networks:
   vizru-network:
