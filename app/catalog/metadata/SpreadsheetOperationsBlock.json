@@ -1,0 +1,193 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "SpreadsheetOperationsBlock",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "SpreadsheetOperationsBlock"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "ssid": {
+                    "type": "string"
+                },
+                "filter": {
+                    "type": "string"
+                },
+                "filterValue": {
+                    "type": "string"
+                },
+                "row_id": {
+                    "type": "string"
+                },
+                "col_details": {
+                    "type": "string"
+                },
+                "resultCount": {
+                    "type": "string"
+                },
+                "rowId": {
+                    "type": "string"
+                },
+                "filterKey": {
+                    "type": "string"
+                },
+                "viz_yield_key": {
+                    "type": "string"
+                },
+                "column-name": {
+                    "type": "string"
+                },
+                "row-old-value": {
+                    "type": "string"
+                },
+                "_id": {
+                    "type": "string"
+                },
+                "sort_column": {
+                    "type": "string"
+                },
+                "filter_conditions": {
+                    "type": "string"
+                },
+                "filter_key": {
+                    "type": "string"
+                },
+                "count": {
+                    "type": "string"
+                },
+                "disable_realtime_flag": {
+                    "type": "string"
+                },
+                "$and": {
+                    "type": "string"
+                },
+                "ssname": {
+                    "type": "string"
+                },
+                "row": {
+                    "type": "string"
+                },
+                "sort": {
+                    "type": "string"
+                },
+                "sort_order": {
+                    "type": "string"
+                },
+                "sstid": {
+                    "type": "string"
+                },
+                "eventSource": {
+                    "type": "string"
+                },
+                "format": {
+                    "type": "string"
+                },
+                "filterkey": {
+                    "type": "string"
+                },
+                "keyvalue": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "string"
+                },
+                "fmtype": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
+                },
+                "joineddata": {
+                    "type": "string"
+                },
+                "column-new-value": {
+                    "type": "string"
+                },
+                "column-old-value": {
+                    "type": "string"
+                },
+                "filtervalue": {
+                    "type": "string"
+                },
+                "insertcolumn": {
+                    "type": "string"
+                },
+                "ss_short_code": {
+                    "type": "string"
+                },
+                "userEmail": {
+                    "type": "string"
+                },
+                "row_meta": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "row-id": {
+                    "type": "string"
+                },
+                "distinct": {
+                    "type": "string"
+                },
+                "_tid": {
+                    "type": "string"
+                },
+                "first": {
+                    "type": "string"
+                },
+                "second": {
+                    "type": "string"
+                },
+                "filters": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "lid": {
+                    "type": "string"
+                },
+                "filter_value": {
+                    "type": "string"
+                },
+                "column-id": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

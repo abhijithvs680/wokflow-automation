@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Mathblock",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "Mathblock"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "config": {
+                    "type": "string"
+                },
+                "math_input": {
+                    "type": "string"
+                },
+                "debugLogData": {
+                    "type": "string"
+                },
+                "key": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

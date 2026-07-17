@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "arrayExtractBlock",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "arrayExtractBlock"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "resultCount": {
+                    "type": "string"
+                },
+                "output_key": {
+                    "type": "string"
+                },
+                "data_selector": {
+                    "type": "string"
+                },
+                "sort_order": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

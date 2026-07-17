@@ -1,0 +1,73 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "googleOcr",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "googleOcr"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "updated-at": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "string"
+                },
+                "responses": {
+                    "type": "string"
+                },
+                "fileID": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "vertices": {
+                    "type": "string"
+                },
+                "file_path": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "languageHints": {
+                    "type": "string"
+                },
+                "imageUri": {
+                    "type": "string"
+                },
+                "requests": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

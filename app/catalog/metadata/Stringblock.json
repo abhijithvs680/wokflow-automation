@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Stringblock",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "Stringblock"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "regex": {
+                    "type": "string"
+                },
+                "input_string": {
+                    "type": "string"
+                },
+                "offset": {
+                    "type": "string"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "debugLogData": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

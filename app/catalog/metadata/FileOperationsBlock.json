@@ -1,0 +1,190 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "FileOperationsBlock",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "FileOperationsBlock"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "mimetype": {
+                    "type": "string"
+                },
+                "OwnerEmail": {
+                    "type": "string"
+                },
+                "file-id": {
+                    "type": "string"
+                },
+                "FileCount": {
+                    "type": "string"
+                },
+                "Description": {
+                    "type": "string"
+                },
+                "@fsize": {
+                    "type": "string"
+                },
+                "fileid": {
+                    "type": "string"
+                },
+                "fid": {
+                    "type": "string"
+                },
+                "tmp_name": {
+                    "type": "string"
+                },
+                "filename": {
+                    "type": "string"
+                },
+                "CreatedAt": {
+                    "type": "string"
+                },
+                "dir_path": {
+                    "type": "string"
+                },
+                "StorageId": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "extension": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "new-lid": {
+                    "type": "string"
+                },
+                "file_name": {
+                    "type": "string"
+                },
+                "sid": {
+                    "type": "string"
+                },
+                "MimeType": {
+                    "type": "string"
+                },
+                "FileFullPath": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "string"
+                },
+                "Flags": {
+                    "type": "string"
+                },
+                "new-cid": {
+                    "type": "string"
+                },
+                "FileSize": {
+                    "type": "string"
+                },
+                "User": {
+                    "type": "string"
+                },
+                "FileIdentification": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
+                },
+                "user_email": {
+                    "type": "string"
+                },
+                "livespace-id": {
+                    "type": "string"
+                },
+                "createdTimestamp": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "@mtype": {
+                    "type": "string"
+                },
+                "file_size": {
+                    "type": "string"
+                },
+                "OwnerName": {
+                    "type": "string"
+                },
+                "def_storage_id": {
+                    "type": "string"
+                },
+                "r_status": {
+                    "type": "string"
+                },
+                "@def_storage_id": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "flags": {
+                    "type": "string"
+                },
+                "owner_name": {
+                    "type": "string"
+                },
+                "@path": {
+                    "type": "string"
+                },
+                "@title": {
+                    "type": "string"
+                },
+                "mime_type": {
+                    "type": "string"
+                },
+                "cid": {
+                    "type": "string"
+                },
+                "lid": {
+                    "type": "string"
+                },
+                "user-id": {
+                    "type": "string"
+                },
+                "FilePath": {
+                    "type": "string"
+                },
+                "@cid": {
+                    "type": "string"
+                },
+                "collection-id": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

@@ -1,0 +1,199 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "userManagementBlocks",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "userManagementBlocks"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "federation_id": {
+                    "type": "string"
+                },
+                "ip_address": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "ls-roles": {
+                    "type": "string"
+                },
+                "gid": {
+                    "type": "string"
+                },
+                "fedId": {
+                    "type": "string"
+                },
+                "roleName": {
+                    "type": "string"
+                },
+                "roleId": {
+                    "type": "string"
+                },
+                "pwd": {
+                    "type": "string"
+                },
+                "globalRoleId": {
+                    "type": "string"
+                },
+                "_id": {
+                    "type": "string"
+                },
+                "target": {
+                    "type": "string"
+                },
+                "fid": {
+                    "type": "string"
+                },
+                "@name": {
+                    "type": "string"
+                },
+                "livespaceroleName": {
+                    "type": "string"
+                },
+                "ref_url": {
+                    "type": "string"
+                },
+                "SERVER_NAME": {
+                    "type": "string"
+                },
+                "lname": {
+                    "type": "string"
+                },
+                "@description": {
+                    "type": "string"
+                },
+                "sid": {
+                    "type": "string"
+                },
+                "fname": {
+                    "type": "string"
+                },
+                "shared_uid": {
+                    "type": "string"
+                },
+                "livespace_shortcode": {
+                    "type": "string"
+                },
+                "globalRole": {
+                    "type": "string"
+                },
+                "HTTPS": {
+                    "type": "string"
+                },
+                "group": {
+                    "type": "string"
+                },
+                "systemRoleName": {
+                    "type": "string"
+                },
+                "customer": {
+                    "type": "string"
+                },
+                "dashboardShortCode": {
+                    "type": "string"
+                },
+                "messages": {
+                    "type": "string"
+                },
+                "REMOTE_ADDR": {
+                    "type": "string"
+                },
+                "cust_id": {
+                    "type": "string"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
+                },
+                "@uid": {
+                    "type": "string"
+                },
+                "sendmail": {
+                    "type": "string"
+                },
+                "@def_storage_type": {
+                    "type": "string"
+                },
+                "action_type": {
+                    "type": "string"
+                },
+                "ref_key": {
+                    "type": "string"
+                },
+                "systemrole": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "@def_storage_id": {
+                    "type": "string"
+                },
+                "customerName": {
+                    "type": "string"
+                },
+                "flags": {
+                    "type": "string"
+                },
+                "REQUEST_URI": {
+                    "type": "string"
+                },
+                "dashboard": {
+                    "type": "string"
+                },
+                "cid": {
+                    "type": "string"
+                },
+                "app_id": {
+                    "type": "string"
+                },
+                "lid": {
+                    "type": "string"
+                },
+                "debugLogData": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "livespacerole": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

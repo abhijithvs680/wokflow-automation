@@ -1,0 +1,73 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ReturnBlock",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "ReturnBlock"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "fid": {
+                    "type": "string"
+                },
+                "returnType": {
+                    "type": "string"
+                },
+                "contentTypeOverride": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
+                },
+                "returnValue": {
+                    "type": "string"
+                },
+                "mime_type": {
+                    "type": "string"
+                },
+                "contentType": {
+                    "type": "string"
+                },
+                "cid": {
+                    "type": "string"
+                },
+                "lid": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "textData": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

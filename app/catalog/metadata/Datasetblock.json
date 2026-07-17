@@ -1,0 +1,58 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Datasetblock",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "Datasetblock"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "keytype": {
+                    "type": "string"
+                },
+                "keyvalue": {
+                    "type": "string"
+                },
+                "field-mapping": {
+                    "type": "string"
+                },
+                "insertcolumn": {
+                    "type": "string"
+                },
+                "action": {
+                    "type": "string"
+                },
+                "sql": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

@@ -1,0 +1,100 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "realTimePush",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "realTimePush"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "jobid": {
+                    "type": "string"
+                },
+                "read": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "_id": {
+                    "type": "string"
+                },
+                "deleted": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "string"
+                },
+                "USER_ID": {
+                    "type": "string"
+                },
+                "notification_log": {
+                    "type": "string"
+                },
+                "variables": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                },
+                "jobId": {
+                    "type": "string"
+                },
+                "_tid": {
+                    "type": "string"
+                },
+                "identifier": {
+                    "type": "string"
+                },
+                "guid": {
+                    "type": "string"
+                },
+                "created-at": {
+                    "type": "string"
+                },
+                "debugLogData": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

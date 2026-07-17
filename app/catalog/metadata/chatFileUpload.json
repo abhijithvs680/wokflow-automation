@@ -1,0 +1,82 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "chatFileUpload",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "chatFileUpload"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "tmp_name": {
+                    "type": "string"
+                },
+                "files": {
+                    "type": "string"
+                },
+                "mime-type": {
+                    "type": "string"
+                },
+                "@lid": {
+                    "type": "string"
+                },
+                "@uid": {
+                    "type": "string"
+                },
+                "file-size": {
+                    "type": "string"
+                },
+                "livespace-id": {
+                    "type": "string"
+                },
+                "@fid": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "@tagsArr": {
+                    "type": "string"
+                },
+                "LivespaceId": {
+                    "type": "string"
+                },
+                "FileId": {
+                    "type": "string"
+                },
+                "@cid": {
+                    "type": "string"
+                },
+                "collection-id": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

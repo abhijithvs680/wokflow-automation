@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "RoveragentBlock",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "RoveragentBlock"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "publishuid": {
+                    "type": "string"
+                },
+                "ResponseStatuscode": {
+                    "type": "string"
+                },
+                "basic_auth": {
+                    "type": "string"
+                },
+                "publishurl": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

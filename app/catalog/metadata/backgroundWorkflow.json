@@ -1,0 +1,73 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "backgroundWorkflow",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "backgroundWorkflow"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "fn-type": {
+                    "type": "string"
+                },
+                "workflowParameters": {
+                    "type": "string"
+                },
+                "wfShortCode": {
+                    "type": "string"
+                },
+                "cli-data": {
+                    "type": "string"
+                },
+                "jobID": {
+                    "type": "string"
+                },
+                "masterWrkflwID": {
+                    "type": "string"
+                },
+                "_id": {
+                    "type": "string"
+                },
+                "workflow_exec_id": {
+                    "type": "string"
+                },
+                "debugLogData": {
+                    "type": "string"
+                },
+                "parent_log_id": {
+                    "type": "string"
+                },
+                "jobStatus": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

@@ -1,0 +1,67 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Dateblock",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "Dateblock"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "value": {
+                    "type": "string"
+                },
+                "input_date": {
+                    "type": "string"
+                },
+                "informat": {
+                    "type": "string"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "string"
+                },
+                "config": {
+                    "type": "string"
+                },
+                "debugLogData": {
+                    "type": "string"
+                },
+                "outformat": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

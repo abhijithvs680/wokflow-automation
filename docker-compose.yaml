@@ -1,0 +1,47 @@
+# Separate compose file for the AI workflow generation service.
+#
+# It joins the network created by the main Vizru compose project. Compose
+# prefixes network names with the project name (folder name by default), so
+# the platform's `vizru-network` is actually `vizru-docker_vizru-network`.
+# Override VIZRU_NETWORK if your project name differs:
+#   docker network ls | findstr vizru
+#   VIZRU_NETWORK=<actual-name> docker compose up -d
+#
+# Start after the platform is up:
+#   docker compose -f workflow-ai/docker-compose.yaml up -d --build
+
+services:
+  workflow-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: workflow-ai
+    restart: unless-stopped
+    environment:
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+      - LLM_BASE_URL=${LLM_BASE_URL:-}
+      # MONGO_URL / MYSQL_DSN come from the platform secret files below
+    secrets:
+      - source: mongo-url
+        target: mongo-url
+      - source: mysql-dsn
+        target: mysql-dsn
+      - source: llm-api-key
+        target: llm-api-key
+    ports:
+      - "8090:8080"          # host access for testing; internal callers use http://workflow-ai:8080
+    networks:
+      - vizru-network
+
+secrets:
+  mongo-url:
+    file: ../receiver/secrets/web/mongo.url
+  mysql-dsn:
+    file: ../receiver/secrets/web/mysql.dsn
+  llm-api-key:
+    file: ./secrets/llm-api-key
+
+networks:
+  vizru-network:
+    external: true
+    name: ${VIZRU_NETWORK:-vizru-docker_vizru-network}

@@ -1,0 +1,82 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "retarusFaxBlock",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "retarusFaxBlock"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "xmlFile": {
+                    "type": "string"
+                },
+                "files": {
+                    "type": "string"
+                },
+                "mime-type": {
+                    "type": "string"
+                },
+                "pdfFileName": {
+                    "type": "string"
+                },
+                "pdfFile": {
+                    "type": "string"
+                },
+                "file-size": {
+                    "type": "string"
+                },
+                "livespace-id": {
+                    "type": "string"
+                },
+                "collection-id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "LivespaceId": {
+                    "type": "string"
+                },
+                "xmlFileName": {
+                    "type": "string"
+                },
+                "user-id": {
+                    "type": "string"
+                },
+                "FileId": {
+                    "type": "string"
+                },
+                "tmp_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

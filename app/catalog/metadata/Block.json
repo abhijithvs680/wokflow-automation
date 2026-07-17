@@ -1,0 +1,76 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Block",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "Block"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "keytype": {
+                    "type": "string"
+                },
+                "legend-view": {
+                    "type": "string"
+                },
+                "dir_path": {
+                    "type": "string"
+                },
+                "chart-type": {
+                    "type": "string"
+                },
+                "keyvalue": {
+                    "type": "string"
+                },
+                "HTTP_HOST": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "source_shortcode": {
+                    "type": "string"
+                },
+                "insertcolumn": {
+                    "type": "string"
+                },
+                "series": {
+                    "type": "string"
+                },
+                "lid": {
+                    "type": "string"
+                },
+                "HTTP_X_FORWARDED_HOST": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

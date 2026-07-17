@@ -1,0 +1,4 @@
+secrets/llm-api-key
+__pycache__/
+*.pyc
+.pytest_cache/

@@ -1,0 +1,46 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "customOutput",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "customOutput"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "outputDataType": {
+                    "type": "string"
+                },
+                "headerStatusCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

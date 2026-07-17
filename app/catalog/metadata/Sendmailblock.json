@@ -1,0 +1,106 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Sendmailblock",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "Sendmailblock"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "mail_subject": {
+                    "type": "string"
+                },
+                "mail_content": {
+                    "type": "string"
+                },
+                "field-mapping": {
+                    "type": "string"
+                },
+                "attachment_file": {
+                    "type": "string"
+                },
+                "alias_email": {
+                    "type": "string"
+                },
+                "mail_cc": {
+                    "type": "string"
+                },
+                "mailTo": {
+                    "type": "string"
+                },
+                "alias_name": {
+                    "type": "string"
+                },
+                "mailBCC": {
+                    "type": "string"
+                },
+                "mailSubject": {
+                    "type": "string"
+                },
+                "mail_from": {
+                    "type": "string"
+                },
+                "from_name": {
+                    "type": "string"
+                },
+                "mailContent": {
+                    "type": "string"
+                },
+                "action": {
+                    "type": "string"
+                },
+                "block-output": {
+                    "type": "string"
+                },
+                "posted_date": {
+                    "type": "string"
+                },
+                "workflowId": {
+                    "type": "string"
+                },
+                "attachment": {
+                    "type": "string"
+                },
+                "blockId": {
+                    "type": "string"
+                },
+                "mail_bcc": {
+                    "type": "string"
+                },
+                "mail_to": {
+                    "type": "string"
+                },
+                "mailCC": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

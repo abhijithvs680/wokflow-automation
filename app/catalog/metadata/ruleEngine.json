@@ -1,0 +1,112 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ruleEngine",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "ruleEngine"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "group-by": {
+                    "type": "string"
+                },
+                "View": {
+                    "type": "string"
+                },
+                "sort-by": {
+                    "type": "string"
+                },
+                "Edit": {
+                    "type": "string"
+                },
+                "sort-order": {
+                    "type": "string"
+                },
+                "action-btns": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "string"
+                },
+                "field": {
+                    "type": "string"
+                },
+                "Add": {
+                    "type": "string"
+                },
+                "where-clause": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "string"
+                },
+                "filter-objects": {
+                    "type": "string"
+                },
+                "variables": {
+                    "type": "string"
+                },
+                "rules-config": {
+                    "type": "string"
+                },
+                "widget_config": {
+                    "type": "string"
+                },
+                "rules-general": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "rules-redirect": {
+                    "type": "string"
+                },
+                "rules-static": {
+                    "type": "string"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "actions": {
+                    "type": "string"
+                },
+                "tabs": {
+                    "type": "string"
+                },
+                "Export": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}

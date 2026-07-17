@@ -1,0 +1,82 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "processFileBlock",
+    "type": "object",
+    "properties": {
+        "componentType": {
+            "type": "string",
+            "const": "processFileBlock"
+        },
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "fid": {
+                    "type": "string"
+                },
+                "dir_path": {
+                    "type": "string"
+                },
+                "file_name": {
+                    "type": "string"
+                },
+                "file-id": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
+                },
+                "error_message": {
+                    "type": "string"
+                },
+                "rows": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "mime_type": {
+                    "type": "string"
+                },
+                "cid": {
+                    "type": "string"
+                },
+                "lid": {
+                    "type": "string"
+                },
+                "debugLogData": {
+                    "type": "string"
+                },
+                "file_size": {
+                    "type": "string"
+                },
+                "tmp_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "events": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "execute",
+                    "onSuccess",
+                    "onFailure"
+                ]
+            }
+        },
+        "outputs": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "status",
+                    "result_data"
+                ]
+            }
+        }
+    },
+    "required": [
+        "componentType"
+    ]
+}
