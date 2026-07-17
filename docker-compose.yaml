@@ -29,7 +29,7 @@ services:
       - source: llm-api-key
         target: llm-api-key
     ports:
-      - "8090:8080"          # host access for testing; internal callers use http://workflow-ai:8080
+      - "5003:5003"          # host access for testing; internal callers use http://workflow-ai:5003
     networks:
       - vizru-network
 
