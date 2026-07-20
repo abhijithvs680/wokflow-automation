@@ -24,7 +24,7 @@ positions, `connection[]`, `full_objects` (PHP-style `json_encode`),
 # 1. copy .env.example to .env and set your LLM_API_KEY
 # 2. make sure the main platform stack is up (it creates the network)
 docker compose -f workflow-ai/docker-compose.yaml up -d --build
-# service: http://localhost:5003  (inside the network: http://workflow-ai:5003)
+# service: http://localhost:8099  (inside the network: http://workflow-ai:8099)
 ```
 
 If your platform compose project uses a different network name, set it:

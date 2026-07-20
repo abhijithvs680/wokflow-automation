@@ -26,7 +26,7 @@ services:
       - MYSQL_USER=${MYSQL_USER:-vizru}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD:-vizru}
     ports:
-      - "5003:5003"          # host access for testing; internal callers use http://workflow-ai:5003
+      - "8099:8099"          # host access for testing; internal callers use http://workflow-ai:8099
     networks:
       - vizru-network
 
