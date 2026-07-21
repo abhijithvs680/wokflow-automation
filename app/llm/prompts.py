@@ -34,30 +34,31 @@ Output ONLY valid JSON matching the provided schema. No prose.
   {filter-count} (after ssdatafilter)
 - Helpers: {%strlen X%} {%math EXPR%} {%implode "sep" arr.value%} {%regexE "/pat/" X "1.0"%}
 
-## Block-specific IR fields
-- setvariable: `set` = {var: value}. Commonly used to build the final output payload
-  (e.g. set {error, message} or the response fields) before ending.
-- condition: `expr` like "{user.Email}==user.Email" or "{httpcode}==200" or
-  "{%strlen OTP.value%}<32". Operators: == != < >
-- ssdatafilter / ssdeleterow / ssautoincrementcol: `spreadsheet` (exact name from
-  the provided catalog), `filters` {Column: value-or-{Ref}}, `operators`
-  {Column: "=" | "!=" | "=i" (case-insensitive) | "<" | ">"}.
+## How to design a workflow
+1. Identify what the use case NEEDS: user accounts? data storage? emails? files? external APIs?
+2. For each need, pick the DEDICATED block from the capability domains below.
+   - NEVER use spreadsheet insert/filter as a substitute when a dedicated block exists.
+     Example: to create a user, use `adduser`, NOT insertssdata into a Users spreadsheet.
+     Example: to grant app access, use `addusertolivespace`, NOT updatessdata.
+3. Add conditions to handle failures (user not found, HTTP errors, empty results).
+4. End with a setvariable or customoutput that returns the result.
+
+## IR Syntax for Special Blocks
+- setvariable: `set` = {var: value}.
+- condition: `expr` like "{user.Email}==user.Email" or "{httpcode}==200". Operators: == != < >
+- ssdatafilter / ssdeleterow / ssautoincrementcol: `spreadsheet`, `filters` {Col: val}, `operators` {Col: "="}.
   After a filter, row fields are {Label.Column} and count is {filter-count}.
-- insertssdata / updatessdata / insertorupdatessdata: `spreadsheet`, `filters`
-  (for update matching), `fields` = {Column: value-or-{Ref}} to write.
-- livecloudfunction: `function` = function name from catalog; `fields` = inputs
-  (HTTP headers/params as shown in the catalog). Response fields: {Label.field};
-  check {httpcode} in a following condition.
-- executeworkflow: `child_workflow` = child workflow name from catalog.
-- sendmail: use `config` with mail_to, mail_subject, mail_content (templates allowed).
-- customoutput: `config` with outputDataType (usually "json").
-- clearoutput: insert between a condition branch and the next data-producing block
-  to clear accumulated output (common platform pattern; no config needed).
-- Other blocks: put raw properties in `config`.
+- insertssdata / updatessdata / insertorupdatessdata: `spreadsheet`, `filters` (for updates), `fields` {Col: val}.
+- livecloudfunction: `function` = function name; `fields` = inputs. Response fields: {Label.field}.
+- executeworkflow: `child_workflow` = child workflow name.
+- sendmail: put mail_to, mail_subject, mail_content in `config`.
+- customoutput: put outputDataType in `config`.
+- clearoutput: insert between a condition and the next data-producing block. (No config).
+- All other blocks: put all their properties inside `config`.
 
 ## Conventions observed in production workflows
 - API flows: genericpost Entry -> lookups/filters -> conditions -> actions ->
-  a final setvariable named "Output" (or customoutput) holding the response.
+  a final setvariable named "Output" holding the response.
 - Always handle the failure branch of important conditions (not-found, expired,
   non-200 http) with a terminal setvariable like {error=True;message=...}.
 """

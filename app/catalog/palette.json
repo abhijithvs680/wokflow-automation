@@ -1,107 +1,374 @@
 {
   "_comment": "Harvested from sys/controllers/workflow/Leftblock.php (static palette) + real VizWorkflow docs. Key = legacy w_objects[].type string. obj_id: null means dynamic (Mongo _id of the target function/workflow).",
   "blocks": {
-    "datatransfer":            { "obj_id": "2001", "icon_path": "/ui-themes/karma/images/svg/entry-block-white.svg", "label": "Get Parameters", "category": "Action", "entry": true,
-                                 "description": "Entry/trigger block. Receives workflow input parameters. Reference inputs as {Label.param}." },
-    "condition":               { "obj_id": "5001", "icon_path": "/ui-themes/karma/images/svg/geometric.svg", "label": "Conditional Block", "category": "Action",
-                                 "description": "Branching. message holds an expression like '{Left.field}==value'. Ops: == != < >. Routes to target_yes/target_no." },
-    "setvariable":             { "obj_id": "1700", "icon_path": "/ui-themes/karma/images/svg/variable-symbol-in-window.svg", "label": "Set Variable", "category": "Action",
-                                 "description": "Sets workflow variables. variables is 'k=v;k2=v2'. Values may use {Ref} templates and {%helpers%}. Often used as final output payload." },
-    "genericpost":             { "obj_id": "4202", "icon_path": "/ui-themes/karma/images/svg/generic-get.svg", "label": "Generic POST", "category": "Action", "entry": true,
-                                 "description": "HTTP POST API entry point. Used as entry block for API-triggered workflows (auth_required 0/1). Incoming JSON fields readable as {Label.field}." },
-    "twilio":                  { "obj_id": "4203", "icon_path": "/ui-themes/karma/images/svg/img-twilio.svg", "label": "Twilio", "category": "Action",
-                                 "description": "Send SMS/voice via Twilio." },
-    "genericget":              { "obj_id": "4204", "icon_path": "/ui-themes/karma/images/svg/internet.svg", "label": "Generic GET", "category": "Action",
-                                 "description": "HTTP GET request to an external URL." },
-    "return":                  { "obj_id": "2002", "icon_path": "/ui-themes/karma/images/svg/return.svg", "label": "Return", "category": "Action",
-                                 "description": "Ends the workflow and returns data to caller." },
-    "chatfileupload":          { "obj_id": "4205", "icon_path": "/ui-themes/karma/images/svg/upload.svg", "label": "File Upload", "category": "Action",
-                                 "description": "Uploads files into a chat stream." },
-    "customoutput":            { "obj_id": "4206", "icon_path": "/ui-themes/karma/images/svg/img-custom-output.svg", "label": "Custom Output", "category": "Action",
-                                 "description": "Formats the API response (outputDataType json/text, headerStatusCode)." },
-    "realtimepush":            { "obj_id": "4207", "icon_path": "/ui-themes/karma/images/svg/real-time-push.svg", "label": "Realtime Push", "category": "Action",
-                                 "description": "Pushes data to WebSocket clients for realtime UI updates." },
-    "sendmail":                { "obj_id": "1001", "icon_path": "/ui-themes/karma/images/svg/web.svg", "label": "Send Mail", "category": "Action",
-                                 "description": "Sends an email. Keys: mail_to, mail_from, mail_subject, mail_content, attachment. Values may use {Ref} templates." },
-    "notify":                  { "obj_id": "3101", "icon_path": "/ui-themes/karma/images/svg/music.svg", "label": "Notification", "category": "Action",
-                                 "description": "Internal platform notification (notify_type, message)." },
-    "uniquevalidator":         { "obj_id": "5005", "icon_path": "/ui-themes/karma/images/svg/create-block-2.svg", "label": "Unique Validator", "category": "Action",
-                                 "description": "Validates unique constraints across data." },
-    "roverai":                 { "obj_id": "4209", "icon_path": "/ui-themes/karma/images/svg/XAE.svg", "label": "XAgent for Extraction", "category": "ROVER AI",
-                                 "description": "LLM extraction agent (Rover AI). Config: project, searchsource, goal, question, instructions." },
-    "roveragent":              { "obj_id": "4210", "icon_path": "/ui-themes/karma/images/svg/XAT.svg", "label": "XAgent for Transformation", "category": "ROVER AI",
-                                 "description": "Autonomous Rover agent for transformations/actions." },
-    "ssdatafilter":            { "obj_id": "4101", "icon_path": "/ui-themes/karma/images/svg/ss-filter.svg", "label": "Spreadsheet Filter", "category": "Spreadsheet", "spreadsheet": "s_master_ssid",
-                                 "description": "Reads rows from a spreadsheet matching filters. Output fields = spreadsheet columns, referenced as {Label.Column}. Sets {filter-count}." },
-    "ssadvdatafilter":         { "obj_id": "4102", "icon_path": "/ui-themes/karma/images/svg/spread-sheet-join.svg", "label": "Spreadsheet Joined Filter", "category": "Spreadsheet", "spreadsheet": "s_master_ssid",
-                                 "description": "Joined/advanced spreadsheet filter." },
-    "insertssdata":            { "obj_id": "1800", "icon_path": "/ui-themes/karma/images/svg/ss-insert.svg", "label": "Spreadsheet Data Insert", "category": "Spreadsheet", "spreadsheet": "ssid",
-                                 "description": "Inserts a row. Column values via properties.field-mapping [{keyvalue, insertcolumn}]." },
-    "insertorupdatessdata":    { "obj_id": "1900", "icon_path": "/ui-themes/karma/images/svg/ss-insert-or-update.svg", "label": "Spreadsheet Data Insert Or Update", "category": "Spreadsheet", "spreadsheet": "ssid",
-                                 "description": "Upserts a row matched by filters; sets values via field-mapping." },
-    "updatessdata":            { "obj_id": "2000", "icon_path": "/ui-themes/karma/images/svg/ss-update.svg", "label": "Spreadsheet Data Update", "category": "Spreadsheet", "spreadsheet": "ssid",
-                                 "description": "Updates rows matched by filters; sets values via properties.field-mapping." },
-    "ssdeleterow":             { "obj_id": "2050", "icon_path": "/ui-themes/karma/images/svg/ss-delete.svg", "label": "Spreadsheet Delete Row", "category": "Spreadsheet", "spreadsheet": "s_master_ssid",
-                                 "description": "Deletes rows matched by filters." },
-    "ssautoincrementcol":      { "obj_id": "2051", "icon_path": "/ui-themes/karma/images/svg/ss-increment-column white.svg", "label": "Spreadsheet Increment Column", "category": "Spreadsheet", "spreadsheet": "s_master_ssid",
-                                 "description": "Atomically increments a numeric column." },
-    "bulkinsertssdata":        { "obj_id": "1801", "icon_path": "/ui-themes/karma/images/svg/spreadsheet-cell-row1.svg", "label": "Spreadsheet Bulk Data Insert", "category": "Spreadsheet", "spreadsheet": "ssid",
-                                 "description": "Bulk inserts many rows." },
-    "tospreadsheet":           { "obj_id": "3001", "icon_path": "/ui-themes/karma/images/svg/spreadsheet-cell-row1.svg", "label": "Convert To Spreadsheet", "category": "Spreadsheet",
-                                 "description": "Writes previous block output matrix into a new spreadsheet." },
-    "getfiles":                { "obj_id": "6000", "icon_path": "/ui-themes/karma/images/svg/get-file.svg", "label": "Get Files", "category": "Files",
-                                 "description": "Lists/fetches files from a livespace." },
-    "deletefile":              { "obj_id": "6001", "icon_path": "/ui-themes/karma/images/svg/delete-file.svg", "label": "Delete File", "category": "Files",
-                                 "description": "Deletes a file." },
-    "movefile":                { "obj_id": "6002", "icon_path": "/ui-themes/karma/images/svg/move-file.svg", "label": "Move File", "category": "Files",
-                                 "description": "Moves a file between folders/livespaces." },
-    "getfiledetails":          { "obj_id": "6003", "icon_path": "/ui-themes/karma/images/svg/get-file-details.svg", "label": "Get File Details", "category": "Files",
-                                 "description": "Fetches metadata for a file." },
-    "processfile":             { "obj_id": "2100", "icon_path": "/ui-themes/karma/images/svg/process-file.svg", "label": "Process File", "category": "Files",
-                                 "description": "Parses/processes an uploaded file (CSV/Excel rows etc.)." },
-    "copyfile":                { "obj_id": "6005", "icon_path": "/ui-themes/karma/images/svg/copy-file.svg", "label": "Copy File", "category": "Files",
-                                 "description": "Copies a file." },
-    "downloadasfile":          { "obj_id": "4208", "icon_path": "/ui-themes/karma/images/svg/download.svg", "label": "Download as File", "category": "Files",
-                                 "description": "Returns data as a downloadable file (download-filename, download-filetype)." },
-    "createfile":              { "obj_id": "6004", "icon_path": "/ui-themes/karma/images/svg/create-file.svg", "label": "Create File", "category": "Files",
-                                 "description": "Creates a file with given content." },
-    "adduser":                 { "obj_id": "7000", "icon_path": "/ui-themes/karma/images/svg/user-add.svg", "label": "Add/Edit User", "category": "UserManagement",
-                                 "description": "Creates or edits a platform user." },
-    "getuser":                 { "obj_id": "7002", "icon_path": "/ui-themes/karma/images/svg/user-filter.svg", "label": "Get User Details", "category": "UserManagement",
-                                 "description": "Fetches user details by email/id." },
-    "getuserlivespaces":       { "obj_id": "7003", "icon_path": "/ui-themes/karma/images/svg/user-getlist.svg", "label": "Get User App List", "category": "UserManagement",
-                                 "description": "Lists apps/livespaces of a user." },
-    "deactivateuser":          { "obj_id": "7004", "icon_path": "/ui-themes/karma/images/svg/user-remove.svg", "label": "Deactivate User", "category": "UserManagement",
-                                 "description": "Deactivates a user account." },
-    "addusertolivespace":      { "obj_id": "7005", "icon_path": "/ui-themes/karma/images/svg/user-addlivespace.svg", "label": "Add User to App", "category": "UserManagement",
-                                 "description": "Grants a user access to an app/livespace with a role." },
-    "removeuserfromlivespace": { "obj_id": "7006", "icon_path": "/ui-themes/karma/images/svg/user-removelivespace.svg", "label": "Remove User from App", "category": "UserManagement",
-                                 "description": "Revokes a user's app/livespace access." },
-    "getlivespacemembers":     { "obj_id": "7007", "icon_path": "/ui-themes/karma/images/svg/livespace-getmembers.svg", "label": "Get App Members List", "category": "UserManagement",
-                                 "description": "Lists members of an app/livespace." },
-    "setlanding":              { "obj_id": "7008", "icon_path": "/ui-themes/karma/images/svg/user-add.svg", "label": "Set User Landing Page", "category": "UserManagement",
-                                 "description": "Sets the landing page for a user." },
-    "arrayextract":            { "obj_id": "2048", "icon_path": "/ui-themes/karma/images/svg/formula.svg", "label": "Array Extract Block", "category": "Custom",
-                                 "description": "Extracts values from data via regex/selector. Keys: regex, data_selector, output_key, sort_order. Output referenced as {Label.output_key}." },
-    "clearoutput":             { "obj_id": "2049", "icon_path": "/ui-themes/karma/images/icon/clear.svg", "label": "Clear Output Block", "category": "Custom",
-                                 "description": "Clears the accumulated output buffer. Commonly inserted after conditions and before livecloud/output blocks." },
-    "ruleengine":              { "obj_id": "2052", "icon_path": "/ui-themes/karma/images/svg/dashboard-rule-engine.svg", "label": "Dashboard Rule", "category": "Custom",
-                                 "description": "Dashboard UI rule engine." },
-    "formrule":                { "obj_id": "2053", "icon_path": "/ui-themes/karma/images/svg/form-rule-engine.svg", "label": "Form Rule", "category": "Custom",
-                                 "description": "Form validation/branching rules." },
-    "zipfiles":                { "obj_id": "2054", "icon_path": "/ui-themes/karma/images/svg/zip_workflow.svg", "label": "Zip Files", "category": "Custom",
-                                 "description": "Zips a set of files." },
-    "backgroundworkflow":      { "obj_id": "2055", "icon_path": "/ui-themes/karma/images/svg/img-background-wf.svg", "label": "Background Workflow", "category": "Custom",
-                                 "description": "Triggers an async child workflow (wfShortCode, workflowParameters)." },
-    "date":                    { "obj_id": "2056", "icon_path": "/ui-themes/karma/images/svg/date-block.svg", "label": "Date", "category": "Custom",
-                                 "description": "Date manipulation (input_date, informat, outformat, operator, time)." },
-    "math":                    { "obj_id": "2057", "icon_path": "/ui-themes/karma/images/svg/math-block.svg", "label": "Math", "category": "Custom",
-                                 "description": "Math expression evaluation (math_input, key)." },
-    "string":                  { "obj_id": "2058", "icon_path": "/ui-themes/karma/images/svg/string-block.svg", "label": "String", "category": "Custom",
-                                 "description": "String operations (regex, input_string, offset, key)." },
-    "livecloudfunction":       { "obj_id": null, "icon_path": "/ui-themes/karma/images/svg/cloud-computing.svg", "label": "LiveCloud Function", "category": "Endpoints", "dynamic": true,
-                                 "description": "Invokes a LiveCloud function/endpoint. obj_id = the function's Mongo _id. Inputs via properties.field-mapping. Sets {httpcode}; response fields as {Label.field}." },
-    "executeworkflow":         { "obj_id": null, "icon_path": "/ui-themes/karma/images/svg/connection.svg", "label": "Execute Workflow", "category": "Workflows", "dynamic": true,
-                                 "description": "Runs a child workflow synchronously. obj_id = child workflow Mongo _id; requires its short_code. Supports loop over a namespace." }
+    "datatransfer": {
+      "obj_id": "2001",
+      "icon_path": "/ui-themes/karma/images/svg/entry-block-white.svg",
+      "label": "Get Parameters",
+      "category": "Action",
+      "entry": true,
+      "description": "Entry/trigger block. Receives workflow input parameters. Reference inputs as {Label.param}."
+    },
+    "condition": {
+      "obj_id": "5001",
+      "icon_path": "/ui-themes/karma/images/svg/geometric.svg",
+      "label": "Conditional Block",
+      "category": "Action",
+      "description": "Branching. message holds an expression like '{Left.field}==value'. Ops: == != < >. Routes to target_yes/target_no."
+    },
+    "setvariable": {
+      "obj_id": "1700",
+      "icon_path": "/ui-themes/karma/images/svg/variable-symbol-in-window.svg",
+      "label": "Set Variable",
+      "category": "Action",
+      "description": "Sets workflow variables. variables is 'k=v;k2=v2'. Values may use {Ref} templates and {%helpers%}. Often used as final output payload."
+    },
+    "genericpost": {
+      "obj_id": "4202",
+      "icon_path": "/ui-themes/karma/images/svg/generic-get.svg",
+      "label": "Generic POST",
+      "category": "Action",
+      "entry": true,
+      "description": "HTTP POST API entry point. Used as entry block for API-triggered workflows (auth_required 0/1). Incoming JSON fields readable as {Label.field}."
+    },
+    "twilio": {
+      "obj_id": "4203",
+      "icon_path": "/ui-themes/karma/images/svg/img-twilio.svg",
+      "label": "Twilio",
+      "category": "Action",
+      "description": "Send SMS/voice via Twilio."
+    },
+    "genericget": {
+      "obj_id": "4204",
+      "icon_path": "/ui-themes/karma/images/svg/internet.svg",
+      "label": "Generic GET",
+      "category": "Action",
+      "description": "Makes an outbound HTTP GET request to an external URL. Use for calling external APIs, webhooks, or fetching data. Config: url, headers. Output: {Label.Body.*}, {httpcode}. Follow with condition on {httpcode}==200."
+    },
+    "return": {
+      "obj_id": "2002",
+      "icon_path": "/ui-themes/karma/images/svg/return.svg",
+      "label": "Return",
+      "category": "Action",
+      "description": "Ends the workflow and returns data to caller."
+    },
+    "chatfileupload": {
+      "obj_id": "4205",
+      "icon_path": "/ui-themes/karma/images/svg/upload.svg",
+      "label": "File Upload",
+      "category": "Action",
+      "description": "Uploads files into a chat stream."
+    },
+    "customoutput": {
+      "obj_id": "4206",
+      "icon_path": "/ui-themes/karma/images/svg/img-custom-output.svg",
+      "label": "Custom Output",
+      "category": "Action",
+      "description": "Formats the API response (outputDataType json/text, headerStatusCode)."
+    },
+    "realtimepush": {
+      "obj_id": "4207",
+      "icon_path": "/ui-themes/karma/images/svg/real-time-push.svg",
+      "label": "Realtime Push",
+      "category": "Action",
+      "description": "Pushes data to WebSocket clients for realtime UI updates."
+    },
+    "sendmail": {
+      "obj_id": "1001",
+      "icon_path": "/ui-themes/karma/images/svg/web.svg",
+      "label": "Send Mail",
+      "category": "Action",
+      "description": "Sends an email. Keys: mail_to, mail_from, mail_subject, mail_content, attachment. Values may use {Ref} templates."
+    },
+    "notify": {
+      "obj_id": "3101",
+      "icon_path": "/ui-themes/karma/images/svg/music.svg",
+      "label": "Notification",
+      "category": "Action",
+      "description": "Internal platform notification (notify_type, message)."
+    },
+    "uniquevalidator": {
+      "obj_id": "5005",
+      "icon_path": "/ui-themes/karma/images/svg/create-block-2.svg",
+      "label": "Unique Validator",
+      "category": "Action",
+      "description": "Validates unique constraints across data."
+    },
+    "roverai": {
+      "obj_id": "4209",
+      "icon_path": "/ui-themes/karma/images/svg/XAE.svg",
+      "label": "XAgent for Extraction",
+      "category": "ROVER AI",
+      "description": "LLM extraction agent (Rover AI). Config: project, searchsource, goal, question, instructions."
+    },
+    "roveragent": {
+      "obj_id": "4210",
+      "icon_path": "/ui-themes/karma/images/svg/XAT.svg",
+      "label": "XAgent for Transformation",
+      "category": "ROVER AI",
+      "description": "Autonomous Rover agent for transformations/actions."
+    },
+    "ssdatafilter": {
+      "obj_id": "4101",
+      "icon_path": "/ui-themes/karma/images/svg/ss-filter.svg",
+      "label": "Spreadsheet Filter",
+      "category": "Spreadsheet",
+      "spreadsheet": "s_master_ssid",
+      "description": "Reads rows from a spreadsheet matching filters. Output fields = spreadsheet columns, referenced as {Label.Column}. Sets {filter-count}."
+    },
+    "ssadvdatafilter": {
+      "obj_id": "4102",
+      "icon_path": "/ui-themes/karma/images/svg/spread-sheet-join.svg",
+      "label": "Spreadsheet Joined Filter",
+      "category": "Spreadsheet",
+      "spreadsheet": "s_master_ssid",
+      "description": "Joined/advanced spreadsheet filter."
+    },
+    "insertssdata": {
+      "obj_id": "1800",
+      "icon_path": "/ui-themes/karma/images/svg/ss-insert.svg",
+      "label": "Spreadsheet Data Insert",
+      "category": "Spreadsheet",
+      "spreadsheet": "ssid",
+      "description": "Inserts a row. Column values via properties.field-mapping [{keyvalue, insertcolumn}]."
+    },
+    "insertorupdatessdata": {
+      "obj_id": "1900",
+      "icon_path": "/ui-themes/karma/images/svg/ss-insert-or-update.svg",
+      "label": "Spreadsheet Data Insert Or Update",
+      "category": "Spreadsheet",
+      "spreadsheet": "ssid",
+      "description": "Upserts a row matched by filters; sets values via field-mapping."
+    },
+    "updatessdata": {
+      "obj_id": "2000",
+      "icon_path": "/ui-themes/karma/images/svg/ss-update.svg",
+      "label": "Spreadsheet Data Update",
+      "category": "Spreadsheet",
+      "spreadsheet": "ssid",
+      "description": "Updates rows matched by filters; sets values via properties.field-mapping."
+    },
+    "ssdeleterow": {
+      "obj_id": "2050",
+      "icon_path": "/ui-themes/karma/images/svg/ss-delete.svg",
+      "label": "Spreadsheet Delete Row",
+      "category": "Spreadsheet",
+      "spreadsheet": "s_master_ssid",
+      "description": "Deletes rows matched by filters."
+    },
+    "ssautoincrementcol": {
+      "obj_id": "2051",
+      "icon_path": "/ui-themes/karma/images/svg/ss-increment-column white.svg",
+      "label": "Spreadsheet Increment Column",
+      "category": "Spreadsheet",
+      "spreadsheet": "s_master_ssid",
+      "description": "Atomically increments a numeric column."
+    },
+    "bulkinsertssdata": {
+      "obj_id": "1801",
+      "icon_path": "/ui-themes/karma/images/svg/spreadsheet-cell-row1.svg",
+      "label": "Spreadsheet Bulk Data Insert",
+      "category": "Spreadsheet",
+      "spreadsheet": "ssid",
+      "description": "Bulk inserts many rows."
+    },
+    "tospreadsheet": {
+      "obj_id": "3001",
+      "icon_path": "/ui-themes/karma/images/svg/spreadsheet-cell-row1.svg",
+      "label": "Convert To Spreadsheet",
+      "category": "Spreadsheet",
+      "description": "Writes previous block output matrix into a new spreadsheet."
+    },
+    "getfiles": {
+      "obj_id": "6000",
+      "icon_path": "/ui-themes/karma/images/svg/get-file.svg",
+      "label": "Get Files",
+      "category": "Files",
+      "description": "Lists/fetches files from a livespace."
+    },
+    "deletefile": {
+      "obj_id": "6001",
+      "icon_path": "/ui-themes/karma/images/svg/delete-file.svg",
+      "label": "Delete File",
+      "category": "Files",
+      "description": "Deletes a file."
+    },
+    "movefile": {
+      "obj_id": "6002",
+      "icon_path": "/ui-themes/karma/images/svg/move-file.svg",
+      "label": "Move File",
+      "category": "Files",
+      "description": "Moves a file between folders/livespaces."
+    },
+    "getfiledetails": {
+      "obj_id": "6003",
+      "icon_path": "/ui-themes/karma/images/svg/get-file-details.svg",
+      "label": "Get File Details",
+      "category": "Files",
+      "description": "Fetches metadata for a file."
+    },
+    "processfile": {
+      "obj_id": "2100",
+      "icon_path": "/ui-themes/karma/images/svg/process-file.svg",
+      "label": "Process File",
+      "category": "Files",
+      "description": "Parses/processes an uploaded file (CSV/Excel rows etc.)."
+    },
+    "copyfile": {
+      "obj_id": "6005",
+      "icon_path": "/ui-themes/karma/images/svg/copy-file.svg",
+      "label": "Copy File",
+      "category": "Files",
+      "description": "Copies a file."
+    },
+    "downloadasfile": {
+      "obj_id": "4208",
+      "icon_path": "/ui-themes/karma/images/svg/download.svg",
+      "label": "Download as File",
+      "category": "Files",
+      "description": "Returns data as a downloadable file (download-filename, download-filetype)."
+    },
+    "createfile": {
+      "obj_id": "6004",
+      "icon_path": "/ui-themes/karma/images/svg/create-file.svg",
+      "label": "Create File",
+      "category": "Files",
+      "description": "Creates a file with given content."
+    },
+    "adduser": {
+      "obj_id": "7000",
+      "icon_path": "/ui-themes/karma/images/svg/user-add.svg",
+      "label": "Add/Edit User",
+      "category": "UserManagement",
+      "description": "Creates or updates a platform user account. Use for user registration, onboarding, profile updates. Required config: email, systemrole. Optional: fname, lname, pwd, group, sendmail. Output: {Label.uid}, {Label.email}."
+    },
+    "getuser": {
+      "obj_id": "7002",
+      "icon_path": "/ui-themes/karma/images/svg/user-filter.svg",
+      "label": "Get User Details",
+      "category": "UserManagement",
+      "description": "Looks up a platform user by email. Use to check if user already exists before adduser. Required config: email. Output: {Label.email}, {Label.fname}, {Label.uid}."
+    },
+    "getuserlivespaces": {
+      "obj_id": "7003",
+      "icon_path": "/ui-themes/karma/images/svg/user-getlist.svg",
+      "label": "Get User App List",
+      "category": "UserManagement",
+      "description": "Lists apps/livespaces of a user."
+    },
+    "deactivateuser": {
+      "obj_id": "7004",
+      "icon_path": "/ui-themes/karma/images/svg/user-remove.svg",
+      "label": "Deactivate User",
+      "category": "UserManagement",
+      "description": "Deactivates a user account."
+    },
+    "addusertolivespace": {
+      "obj_id": "7005",
+      "icon_path": "/ui-themes/karma/images/svg/user-addlivespace.svg",
+      "label": "Add User to App",
+      "category": "UserManagement",
+      "description": "Grants a user access to a specific app/livespace. Use AFTER adduser for onboarding. Required config: email, lid (or livespace_shortcode). Optional: livespacerole. Output: {Label.status}."
+    },
+    "removeuserfromlivespace": {
+      "obj_id": "7006",
+      "icon_path": "/ui-themes/karma/images/svg/user-removelivespace.svg",
+      "label": "Remove User from App",
+      "category": "UserManagement",
+      "description": "Revokes a user's app/livespace access."
+    },
+    "getlivespacemembers": {
+      "obj_id": "7007",
+      "icon_path": "/ui-themes/karma/images/svg/livespace-getmembers.svg",
+      "label": "Get App Members List",
+      "category": "UserManagement",
+      "description": "Lists members of an app/livespace."
+    },
+    "setlanding": {
+      "obj_id": "7008",
+      "icon_path": "/ui-themes/karma/images/svg/user-add.svg",
+      "label": "Set User Landing Page",
+      "category": "UserManagement",
+      "description": "Sets the landing page for a user."
+    },
+    "arrayextract": {
+      "obj_id": "2048",
+      "icon_path": "/ui-themes/karma/images/svg/formula.svg",
+      "label": "Array Extract Block",
+      "category": "Custom",
+      "description": "Extracts values from data via regex/selector. Keys: regex, data_selector, output_key, sort_order. Output referenced as {Label.output_key}."
+    },
+    "clearoutput": {
+      "obj_id": "2049",
+      "icon_path": "/ui-themes/karma/images/icon/clear.svg",
+      "label": "Clear Output Block",
+      "category": "Custom",
+      "description": "Clears the accumulated output buffer. Commonly inserted after conditions and before livecloud/output blocks."
+    },
+    "ruleengine": {
+      "obj_id": "2052",
+      "icon_path": "/ui-themes/karma/images/svg/dashboard-rule-engine.svg",
+      "label": "Dashboard Rule",
+      "category": "Custom",
+      "description": "Dashboard UI rule engine."
+    },
+    "formrule": {
+      "obj_id": "2053",
+      "icon_path": "/ui-themes/karma/images/svg/form-rule-engine.svg",
+      "label": "Form Rule",
+      "category": "Custom",
+      "description": "Form validation/branching rules."
+    },
+    "zipfiles": {
+      "obj_id": "2054",
+      "icon_path": "/ui-themes/karma/images/svg/zip_workflow.svg",
+      "label": "Zip Files",
+      "category": "Custom",
+      "description": "Zips a set of files."
+    },
+    "backgroundworkflow": {
+      "obj_id": "2055",
+      "icon_path": "/ui-themes/karma/images/svg/img-background-wf.svg",
+      "label": "Background Workflow",
+      "category": "Custom",
+      "description": "Triggers an async child workflow (wfShortCode, workflowParameters)."
+    },
+    "date": {
+      "obj_id": "2056",
+      "icon_path": "/ui-themes/karma/images/svg/date-block.svg",
+      "label": "Date",
+      "category": "Custom",
+      "description": "Date manipulation and formatting. Use for calculating due dates, comparing timestamps, reformatting dates. Config: input_date, informat, outformat, operator, time. Output: {Label.value}."
+    },
+    "math": {
+      "obj_id": "2057",
+      "icon_path": "/ui-themes/karma/images/svg/math-block.svg",
+      "label": "Math",
+      "category": "Custom",
+      "description": "Math expression evaluation (math_input, key)."
+    },
+    "string": {
+      "obj_id": "2058",
+      "icon_path": "/ui-themes/karma/images/svg/string-block.svg",
+      "label": "String",
+      "category": "Custom",
+      "description": "String operations (regex, input_string, offset, key)."
+    },
+    "livecloudfunction": {
+      "obj_id": null,
+      "icon_path": "/ui-themes/karma/images/svg/cloud-computing.svg",
+      "label": "LiveCloud Function",
+      "category": "Endpoints",
+      "dynamic": true,
+      "description": "Invokes a LiveCloud function/endpoint. obj_id = the function's Mongo _id. Inputs via properties.field-mapping. Sets {httpcode}; response fields as {Label.field}."
+    },
+    "executeworkflow": {
+      "obj_id": null,
+      "icon_path": "/ui-themes/karma/images/svg/connection.svg",
+      "label": "Execute Workflow",
+      "category": "Workflows",
+      "dynamic": true,
+      "description": "Runs a child workflow synchronously. obj_id = child workflow Mongo _id; requires its short_code. Supports loop over a namespace."
+    }
   }
 }

@@ -115,12 +115,20 @@ def config_keys(block_type: str) -> list[str]:
 
 
 def prompt_catalog(types: list[str] | None = None) -> str:
-    """Compact one-line-per-block catalog for the LLM prompt."""
-    lines = []
-    for t, info in palette().items():
+    """Compact catalog grouped by category for the LLM prompt."""
+    pal = palette()
+    by_cat: dict[str, list[tuple[str, dict]]] = {}
+    for t, info in pal.items():
         if types and t not in types:
             continue
-        keys = config_keys(t)
-        extra = f" config keys: {', '.join(keys[:12])}" if keys else ""
-        lines.append(f"- {t}: {info['description']}{extra}")
-    return "\n".join(lines)
+        cat = info.get("category", "Other")
+        by_cat.setdefault(cat, []).append((t, info))
+
+    lines = []
+    for cat, items in by_cat.items():
+        lines.append(f"\n### {cat}")
+        for t, info in items:
+            keys = config_keys(t)
+            extra = f"  config: {', '.join(keys[:10])}" if keys else ""
+            lines.append(f"- {t}: {info['description']}{extra}")
+    return "\n".join(lines).strip()
