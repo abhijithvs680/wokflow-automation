@@ -32,22 +32,22 @@ class PipelineResult:
     attempts: int = 0
 
 
-def _tenant_context(prompt_text: str, tid: int) -> str:
-    ss = retrieval.top_spreadsheets(prompt_text, ss_cat.tenant_spreadsheets(tid), k=5)
+def _tenant_context(prompt_text: str, tid: int, lid: int | None = None) -> str:
+    ss = retrieval.top_spreadsheets(prompt_text, ss_cat.tenant_spreadsheets(tid, lid=lid), k=5)
     fns = retrieval.top_named(prompt_text, fn_cat.tenant_functions(tid), k=5)
     wfs = retrieval.top_named(prompt_text, fn_cat.tenant_workflows(tid), k=5)
     return prompts.build_context(None, ss, fns, wfs)
 
 
-def _compiler(tid: int) -> Compiler:
+def _compiler(tid: int, lid: int | None = None) -> Compiler:
     return Compiler(
-        spreadsheet_resolver=ss_cat.make_resolver(tid),
+        spreadsheet_resolver=ss_cat.make_resolver(tid, lid=lid),
         function_resolver=fn_cat.make_function_resolver(tid),
         workflow_resolver=fn_cat.make_workflow_resolver(tid),
     )
 
 
-def _try_build(raw_ir: str, tid: int, existing_ids: list[str] | None = None) -> tuple[dict | None, dict | None, list[str], list[str]]:
+def _try_build(raw_ir: str, tid: int, lid: int | None = None, existing_ids: list[str] | None = None) -> tuple[dict | None, dict | None, list[str], list[str]]:
     """raw LLM json -> (ir_dict, doc, errors, warnings)."""
     errors: list[str] = []
     try:
@@ -56,16 +56,16 @@ def _try_build(raw_ir: str, tid: int, existing_ids: list[str] | None = None) -> 
         return None, None, [f"IR parse error: {e}"], []
 
     try:
-        doc = _compiler(tid).compile(ir, existing_ids=existing_ids)
+        doc = _compiler(tid, lid=lid).compile(ir, existing_ids=existing_ids)
     except CompileError as e:
         return ir.model_dump(exclude_none=True), None, [f"compile error: {e}"], []
 
-    result = validate_workflow(doc, ss_catalog=ss_cat.as_ss_catalog(tid))
+    result = validate_workflow(doc, ss_catalog=ss_cat.as_ss_catalog(tid, lid=lid))
     errors.extend(result.errors)
     return ir.model_dump(exclude_none=True), doc, errors, result.warnings
 
 
-def _run_with_repair(messages: list[dict], tid: int, existing_ids: list[str] | None = None) -> PipelineResult:
+def _run_with_repair(messages: list[dict], tid: int, lid: int | None = None, existing_ids: list[str] | None = None) -> PipelineResult:
     max_attempts = 1 + get_settings().llm_max_repair_attempts
     res = PipelineResult(ok=False)
     raw = ""
@@ -76,7 +76,7 @@ def _run_with_repair(messages: list[dict], tid: int, existing_ids: list[str] | N
         except client.LLMError as e:
             res.errors = [str(e)]
             return res
-        ir_dict, doc, errors, warnings = _try_build(raw, tid, existing_ids)
+        ir_dict, doc, errors, warnings = _try_build(raw, tid, lid=lid, existing_ids=existing_ids)
         res.ir, res.document, res.errors, res.warnings = ir_dict, doc, errors, warnings
         if doc is not None and not errors:
             res.ok = True
@@ -85,18 +85,18 @@ def _run_with_repair(messages: list[dict], tid: int, existing_ids: list[str] | N
     return res
 
 
-def generate_workflow(prompt_text: str, tid: int) -> PipelineResult:
-    context = _tenant_context(prompt_text, tid)
+def generate_workflow(prompt_text: str, tid: int, lid: int | None = None) -> PipelineResult:
+    context = _tenant_context(prompt_text, tid, lid=lid)
     messages = prompts.generation_messages(context, prompt_text)
-    return _run_with_repair(messages, tid)
+    return _run_with_repair(messages, tid, lid=lid)
 
 
-def edit_workflow(doc: dict, instruction: str, tid: int) -> PipelineResult:
+def edit_workflow(doc: dict, instruction: str, tid: int, lid: int | None = None) -> PipelineResult:
     ir, _label_to_id = decompile(doc)
     existing_ids = [o["id"] for o in doc.get("w_objects", [])]
-    context = _tenant_context(instruction + " " + doc.get("name", ""), tid)
+    context = _tenant_context(instruction + " " + doc.get("name", ""), tid, lid=lid)
     messages = prompts.edit_messages(context, ir.model_dump(exclude_none=True), instruction)
-    result = _run_with_repair(messages, tid, existing_ids=existing_ids)
+    result = _run_with_repair(messages, tid, lid=lid, existing_ids=existing_ids)
     if result.ok and result.document is not None:
         # keep original identity fields
         result.document["name"] = result.document.get("name") or doc.get("name")
@@ -104,7 +104,7 @@ def edit_workflow(doc: dict, instruction: str, tid: int) -> PipelineResult:
     return result
 
 
-def compile_ir_dict(ir_data: dict[str, Any], tid: int | None) -> PipelineResult:
+def compile_ir_dict(ir_data: dict[str, Any], tid: int | None, lid: int | None = None) -> PipelineResult:
     """Compile a caller-supplied IR without any LLM call (testing / manual use)."""
     res = PipelineResult(ok=False, attempts=0)
     try:
@@ -113,13 +113,13 @@ def compile_ir_dict(ir_data: dict[str, Any], tid: int | None) -> PipelineResult:
         res.errors = [f"IR parse error: {e}"]
         return res
     try:
-        compiler = _compiler(tid) if tid is not None else Compiler()
+        compiler = _compiler(tid, lid=lid) if tid is not None else Compiler()
         doc = compiler.compile(ir)
     except CompileError as e:
         res.ir = ir.model_dump(exclude_none=True)
         res.errors = [f"compile error: {e}"]
         return res
-    ss_catalog = ss_cat.as_ss_catalog(tid) if tid is not None else None
+    ss_catalog = ss_cat.as_ss_catalog(tid, lid=lid) if tid is not None else None
     v = validate_workflow(doc, ss_catalog=ss_catalog)
     res.ir = ir.model_dump(exclude_none=True)
     res.document = doc

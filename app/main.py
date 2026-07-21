@@ -30,6 +30,7 @@ app = FastAPI(
 class GenerateRequest(BaseModel):
     prompt: str = Field(min_length=3, description="Natural-language use case")
     tid: int = Field(description="Tenant id (_tid)")
+    lid: int | None = Field(default=None, description="LiveSpace id — scopes spreadsheet context")
     uid: int = Field(default=0, description="User id for created-by/updated-by")
     save: bool = Field(default=False, description="Persist to Mongo when valid")
 
@@ -37,6 +38,7 @@ class GenerateRequest(BaseModel):
 class EditRequest(BaseModel):
     instruction: str = Field(min_length=3)
     tid: int
+    lid: int | None = Field(default=None, description="LiveSpace id — scopes spreadsheet context")
     uid: int = 0
     save: bool = Field(default=False)
 
@@ -44,17 +46,20 @@ class EditRequest(BaseModel):
 class CompileRequest(BaseModel):
     ir: dict[str, Any]
     tid: int | None = Field(default=None, description="Tenant for resolvers/validation; omit for offline compile")
+    lid: int | None = Field(default=None, description="LiveSpace id — scopes spreadsheet resolution")
 
 
 class SaveRequest(BaseModel):
     document: dict[str, Any]
     tid: int
+    lid: int | None = Field(default=None, description="LiveSpace id — scopes spreadsheet validation")
     uid: int = 0
 
 
 class ValidateRequest(BaseModel):
     document: dict[str, Any]
     tid: int | None = None
+    lid: int | None = None
 
 
 def _pipeline_response(res: flows.PipelineResult, saved_id: str | None = None) -> dict:
@@ -78,7 +83,7 @@ def healthz() -> dict:
 
 @app.post("/workflows/generate")
 def generate(req: GenerateRequest) -> dict:
-    res = flows.generate_workflow(req.prompt, req.tid)
+    res = flows.generate_workflow(req.prompt, req.tid, lid=req.lid)
     saved_id = None
     if req.save:
         if not res.ok or res.document is None:
@@ -92,7 +97,7 @@ def edit(workflow_id: str, req: EditRequest) -> dict:
     doc = mongo.get_workflow(workflow_id, req.tid)
     if doc is None:
         raise HTTPException(status_code=404, detail=f"workflow {workflow_id} not found for tid {req.tid}")
-    res = flows.edit_workflow(doc, req.instruction, req.tid)
+    res = flows.edit_workflow(doc, req.instruction, req.tid, lid=req.lid)
     saved_id = None
     if req.save:
         if not res.ok or res.document is None:
@@ -109,13 +114,13 @@ def edit(workflow_id: str, req: EditRequest) -> dict:
 @app.post("/workflows/compile")
 def compile_ir(req: CompileRequest) -> dict:
     """Compile a hand-written IR (no LLM). Useful for testing and integrations."""
-    res = flows.compile_ir_dict(req.ir, req.tid)
+    res = flows.compile_ir_dict(req.ir, req.tid, lid=req.lid)
     return _pipeline_response(res)
 
 
 @app.post("/workflows/save")
 def save(req: SaveRequest) -> dict:
-    v = validate_workflow(req.document, ss_catalog=ss_cat.as_ss_catalog(req.tid))
+    v = validate_workflow(req.document, ss_catalog=ss_cat.as_ss_catalog(req.tid, lid=req.lid))
     if not v.ok:
         raise HTTPException(status_code=422, detail={"errors": v.errors, "warnings": v.warnings})
     wid = mongo.insert_workflow(req.document, req.tid, req.uid)
@@ -124,7 +129,7 @@ def save(req: SaveRequest) -> dict:
 
 @app.post("/workflows/validate")
 def validate(req: ValidateRequest) -> dict:
-    ss_catalog = ss_cat.as_ss_catalog(req.tid) if req.tid is not None else None
+    ss_catalog = ss_cat.as_ss_catalog(req.tid, lid=req.lid) if req.tid is not None else None
     v = validate_workflow(req.document, ss_catalog=ss_catalog)
     return {"ok": v.ok, "errors": v.errors, "warnings": v.warnings}
 
@@ -139,7 +144,7 @@ def workflow_ir(workflow_id: str, tid: int) -> dict:
 
 
 @app.get("/workflows")
-def workflows(tid: int, limit: int = 50) -> dict:
+def workflows(tid: int, lid: int | None = None, limit: int = 50) -> dict:
     rows = mongo.list_workflows(tid, limit)
     return {"workflows": [
         {"id": str(r["_id"]), "name": r.get("name"), "short_code": r.get("short_code")}
@@ -155,8 +160,8 @@ def catalog_blocks() -> dict:
 
 
 @app.get("/catalog/spreadsheets")
-def catalog_spreadsheets(tid: int, refresh: bool = False) -> dict:
-    return {"spreadsheets": ss_cat.tenant_spreadsheets(tid, force=refresh)}
+def catalog_spreadsheets(tid: int, lid: int | None = None, refresh: bool = False) -> dict:
+    return {"spreadsheets": ss_cat.tenant_spreadsheets(tid, lid=lid, force=refresh)}
 
 
 @app.get("/catalog/functions")

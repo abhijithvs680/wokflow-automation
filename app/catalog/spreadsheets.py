@@ -14,7 +14,7 @@ import time
 from ..config import get_settings
 from ..db import mongo, mysql
 
-_cache: dict[int, tuple[float, list[dict]]] = {}
+_cache: dict[tuple[int, int | None], tuple[float, list[dict]]] = {}
 
 
 def _columns_from_schema(ss_doc: dict) -> list[dict]:
@@ -34,14 +34,18 @@ def _columns_from_schema(ss_doc: dict) -> list[dict]:
     return cols
 
 
-def tenant_spreadsheets(tid: int, force: bool = False) -> list[dict]:
-    """[{name, short_code, master_ssid, lid, columns:[{name,key,type}]}]"""
+def tenant_spreadsheets(tid: int, lid: int | None = None, force: bool = False) -> list[dict]:
+    """[{name, short_code, master_ssid, lid, columns:[{name,key,type}]}]
+
+    When *lid* is provided the result is scoped to that LiveSpace only.
+    """
+    cache_key = (tid, lid)
     ttl = get_settings().catalog_ttl_seconds
     now = time.time()
-    if not force and tid in _cache and now - _cache[tid][0] < ttl:
-        return _cache[tid][1]
+    if not force and cache_key in _cache and now - _cache[cache_key][0] < ttl:
+        return _cache[cache_key][1]
 
-    index = mysql.spreadsheet_index(tid)
+    index = mysql.spreadsheet_index(tid, lid=lid)
     ssids = [row["master_ssid"] for row in index if row.get("master_ssid")]
     schemas = {str(d["_id"]): d for d in mongo.get_spreadsheet_schemas(tid, ssids)}
 
@@ -56,13 +60,13 @@ def tenant_spreadsheets(tid: int, force: bool = False) -> list[dict]:
             "lid": row.get("lid"),
             "columns": _columns_from_schema(doc) if doc else [],
         })
-    _cache[tid] = (now, catalog)
+    _cache[cache_key] = (now, catalog)
     return catalog
 
 
-def make_resolver(tid: int):
+def make_resolver(tid: int, lid: int | None = None):
     """Returns fn(name_or_id) -> {master_ssid, lid, short_code, columns} | None."""
-    catalog = tenant_spreadsheets(tid)
+    catalog = tenant_spreadsheets(tid, lid=lid)
 
     def resolve(ref: str) -> dict | None:
         ref_l = (ref or "").strip().lower()
@@ -78,9 +82,9 @@ def make_resolver(tid: int):
     return resolve
 
 
-def as_ss_catalog(tid: int) -> dict[str, dict]:
+def as_ss_catalog(tid: int, lid: int | None = None) -> dict[str, dict]:
     """master_ssid -> {name, columns:[names]} for the validator."""
     return {
         ss["master_ssid"]: {"name": ss["name"], "columns": [c["name"] for c in ss["columns"]]}
-        for ss in tenant_spreadsheets(tid)
+        for ss in tenant_spreadsheets(tid, lid=lid)
     }
