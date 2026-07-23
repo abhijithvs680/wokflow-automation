@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 
-from openai import OpenAI
+from openai import BadRequestError, OpenAI
 
 from ..config import get_settings
 from ..ir.schema import WorkflowIR
@@ -27,12 +27,21 @@ def _client() -> OpenAI:
 
 def chat_json(messages: list[dict]) -> str:
     s = get_settings()
-    resp = _client().chat.completions.create(
-        model=s.llm_model,
-        messages=messages,
-        temperature=s.llm_temperature,
-        response_format={"type": "json_object"},
-    )
+    kwargs = {
+        "model": s.llm_model,
+        "messages": messages,
+        "temperature": s.llm_temperature,
+        "response_format": {"type": "json_object"},
+    }
+    try:
+        resp = _client().chat.completions.create(**kwargs)
+    except BadRequestError as e:
+        if "temperature" in str(e).lower():
+            kwargs.pop("temperature", None)
+            resp = _client().chat.completions.create(**kwargs)
+        else:
+            raise
+            
     content = resp.choices[0].message.content or ""
     if not content.strip():
         raise LLMError("empty LLM response")
