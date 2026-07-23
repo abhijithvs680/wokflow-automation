@@ -55,7 +55,7 @@ class Settings:
     # LLM (any OpenAI-compatible endpoint: OpenAI, OpenRouter, Groq, Ollama...)
     llm_api_key: str = ""
     llm_base_url: str | None = None
-    llm_model: str = "gpt-4o-mini"
+    llm_model: str = "gpt-5.6-sol"
     llm_temperature: float = 0.1
     llm_max_repair_attempts: int = 2
 
