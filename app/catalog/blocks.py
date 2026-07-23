@@ -86,6 +86,17 @@ def palette() -> dict:
 
 
 @lru_cache(maxsize=1)
+def block_docs() -> dict:
+    """Detailed per-block docs (usage, required/optional config keys, outputs)
+    harvested from the PHP block classes. Overlays palette()."""
+    path = os.path.join(_HERE, "block_docs.json")
+    if not os.path.exists(path):
+        return {}
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)["blocks"]
+
+
+@lru_cache(maxsize=1)
 def metadata_schemas() -> dict:
     """componentType -> JSON schema (if the metadata folder was vendored)."""
     out: dict[str, dict] = {}
@@ -115,12 +126,36 @@ def config_keys(block_type: str) -> list[str]:
 
 
 def prompt_catalog(types: list[str] | None = None) -> str:
-    """Compact one-line-per-block catalog for the LLM prompt."""
-    lines = []
+    """Full block catalog for the LLM prompt, grouped by category.
+
+    Every block type is always included (the whole catalog is small); blocks
+    with harvested docs additionally list their real config keys and outputs so
+    the model can configure them without examples.
+    """
+    docs = block_docs()
+    by_category: dict[str, list[str]] = {}
     for t, info in palette().items():
         if types and t not in types:
             continue
-        keys = config_keys(t)
-        extra = f" config keys: {', '.join(keys[:12])}" if keys else ""
-        lines.append(f"- {t}: {info['description']}{extra}")
-    return "\n".join(lines)
+        doc = docs.get(t)
+        if doc:
+            line = f"- {t}: {doc['usage']}"
+            req = doc.get("required") or {}
+            opt = doc.get("optional") or {}
+            if req:
+                line += "\n  required config: " + "; ".join(f"{k} ({v})" for k, v in req.items())
+            if opt:
+                line += "\n  optional config: " + "; ".join(f"{k} ({v})" for k, v in opt.items())
+            if doc.get("outputs"):
+                line += "\n  outputs: " + ", ".join("{Label.%s}" % o for o in doc["outputs"])
+        else:
+            keys = config_keys(t)
+            extra = f" Config keys: {', '.join(keys[:12])}." if keys else ""
+            line = f"- {t}: {info['description']}{extra}"
+        by_category.setdefault(info.get("category", "Other"), []).append(line)
+
+    parts = []
+    for category, lines in by_category.items():
+        parts.append(f"### {category}")
+        parts.extend(lines)
+    return "\n".join(parts)

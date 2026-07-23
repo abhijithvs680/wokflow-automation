@@ -22,6 +22,7 @@ from ..compiler.phpjson import php_json_encode
 WORKFLOW_COLLECTION = "VizWorkflow"
 SPREADSHEET_COLLECTION = "VizSpreadsheet"
 LIVECLOUD_FUNCTIONS_COLLECTION = "VizLivecloudAppsFunctions"
+LIVESPACE_ROLES_COLLECTION = "t-livespaces-roles"
 
 
 @lru_cache(maxsize=1)
@@ -108,6 +109,12 @@ def list_livecloud_functions(tid: int) -> list[dict]:
     cur = db()[LIVECLOUD_FUNCTIONS_COLLECTION].find(
         {"_tid": tid}, {"name": 1, "apps-id": 1}
     )
+    return list(cur)
+
+
+def list_livespace_roles(tid: int) -> list[dict]:
+    """Livespace role names (usable as livespaceroleName in usermgmt blocks)."""
+    cur = db()[LIVESPACE_ROLES_COLLECTION].find({"_tid": tid}, {"name": 1})
     return list(cur)
 
 

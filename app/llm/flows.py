@@ -6,12 +6,14 @@ edit:     load doc -> decompile -> LLM edit -> recompile -> validate -> (repair)
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
 from pydantic import ValidationError
 
 from ..catalog import functions as fn_cat
+from ..catalog import livespace as ls_cat
 from ..catalog import retrieval
 from ..catalog import spreadsheets as ss_cat
 from ..compiler.compile import CompileError, Compiler
@@ -33,10 +35,18 @@ class PipelineResult:
 
 
 def _tenant_context(prompt_text: str, tid: int, lid: int | None = None) -> str:
-    ss = retrieval.top_spreadsheets(prompt_text, ss_cat.tenant_spreadsheets(tid, lid=lid), k=5)
+    livespace = None
+    all_ss = ss_cat.tenant_spreadsheets(tid, lid=lid)
+    if lid is not None:
+        # explicit app scope: give the FULL app context (identity, roles, every
+        # spreadsheet in the app) instead of lexical guessing
+        livespace = ls_cat.livespace_context(tid, lid)
+        ss = all_ss if len(all_ss) <= 15 else retrieval.top_spreadsheets(prompt_text, all_ss, k=15)
+    else:
+        ss = retrieval.top_spreadsheets(prompt_text, all_ss, k=5)
     fns = retrieval.top_named(prompt_text, fn_cat.tenant_functions(tid), k=5)
     wfs = retrieval.top_named(prompt_text, fn_cat.tenant_workflows(tid), k=5)
-    return prompts.build_context(None, ss, fns, wfs)
+    return prompts.build_context(None, ss, fns, wfs, livespace=livespace)
 
 
 def _compiler(tid: int, lid: int | None = None) -> Compiler:
@@ -47,6 +57,26 @@ def _compiler(tid: int, lid: int | None = None) -> Compiler:
     )
 
 
+def _plan_coverage_errors(ir) -> list[str]:
+    """The plan is the model's own requirement decomposition; a block type named
+    in the plan but absent from the steps means the workflow is incomplete."""
+    from ..catalog import blocks as blk_cat
+
+    if not getattr(ir, "plan", None):
+        return []
+    used = {s.block for s in ir.steps} | {ir.trigger.type}
+    errors = []
+    known = set(blk_cat.palette().keys())
+    for item in ir.plan:
+        for token in re.findall(r"[a-z]+", item.lower()):
+            if token in known and token not in used:
+                errors.append(
+                    f"plan item '{item}' names block '{token}' but no step uses it — "
+                    "add the step or correct the plan"
+                )
+    return errors
+
+
 def _try_build(raw_ir: str, tid: int, lid: int | None = None, existing_ids: list[str] | None = None) -> tuple[dict | None, dict | None, list[str], list[str]]:
     """raw LLM json -> (ir_dict, doc, errors, warnings)."""
     errors: list[str] = []
@@ -54,6 +84,10 @@ def _try_build(raw_ir: str, tid: int, lid: int | None = None, existing_ids: list
         ir = client.parse_ir(raw_ir)
     except (client.LLMError, ValidationError) as e:
         return None, None, [f"IR parse error: {e}"], []
+
+    plan_errors = _plan_coverage_errors(ir)
+    if plan_errors:
+        return ir.model_dump(exclude_none=True), None, plan_errors, []
 
     try:
         doc = _compiler(tid, lid=lid).compile(ir, existing_ids=existing_ids)

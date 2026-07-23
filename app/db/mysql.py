@@ -54,3 +54,18 @@ def spreadsheet_index(tid: int, lid: int | None = None) -> list[dict]:
             else:
                 cur.execute(SS_INDEX_SQL, (tid,))
             return list(cur.fetchall())
+
+
+LIVESPACE_INFO_SQL = """
+SELECT lid, name, short_code
+FROM viz_livespace
+WHERE tid = %s AND lid = %s
+"""
+
+
+def livespace_info(tid: int, lid: int) -> dict | None:
+    """Livespace (app) name + short_code for a given lid."""
+    with _conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(LIVESPACE_INFO_SQL, (tid, lid))
+            return cur.fetchone()

@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 import re
 
-import pyjson5
+import json5
 
 _HERE = os.path.dirname(__file__)
 REFERENCE_PATH = os.path.normpath(os.path.join(_HERE, "..", "..", "referance.json"))
@@ -33,7 +33,7 @@ def load_reference_docs(path: str = REFERENCE_PATH) -> list[dict]:
             chunk = "[" + chunk
         if not chunk.rstrip().endswith("]"):
             chunk = chunk + "]"
-        parsed = pyjson5.decode(chunk)
+        parsed = json5.loads(chunk)
         if isinstance(parsed, list):
             docs.extend(d for d in parsed if isinstance(d, dict))
     return docs

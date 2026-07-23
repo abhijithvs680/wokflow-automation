@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field
 
 from .catalog import blocks as blk_cat
 from .catalog import functions as fn_cat
+from .catalog import livespace as ls_cat
 from .catalog import spreadsheets as ss_cat
 from .compiler.decompile import decompile
 from .db import mongo
@@ -167,3 +168,14 @@ def catalog_spreadsheets(tid: int, lid: int | None = None, refresh: bool = False
 @app.get("/catalog/functions")
 def catalog_functions(tid: int) -> dict:
     return {"functions": fn_cat.tenant_functions(tid), "child_workflows": fn_cat.tenant_workflows(tid)}
+
+
+@app.get("/catalog/livespace")
+def catalog_livespace(tid: int, lid: int) -> dict:
+    """LiveSpace (app) context: identity, role names, spreadsheets — what the
+    LLM receives when a request is scoped to this app."""
+    ctx = ls_cat.livespace_context(tid, lid)
+    if ctx is None:
+        raise HTTPException(status_code=404, detail=f"livespace {lid} not found for tid {tid}")
+    ctx["spreadsheets"] = ss_cat.tenant_spreadsheets(tid, lid=lid)
+    return ctx

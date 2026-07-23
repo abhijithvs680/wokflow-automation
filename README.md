@@ -41,8 +41,8 @@ Environment (all optional): `LLM_MODEL` (default `gpt-4o-mini`), `LLM_BASE_URL`
 
 | Method | Path | Purpose |
 |---|---|---|
-| POST | `/workflows/generate` | `{prompt, tid, uid, save}` → IR + document (+ Mongo id if `save`) |
-| POST | `/workflows/{id}/edit` | `{instruction, tid, uid, save}` → edited document |
+| POST | `/workflows/generate` | `{prompt, tid, uid, lid?, save}` → IR + document (+ Mongo id if `save`) |
+| POST | `/workflows/{id}/edit` | `{instruction, tid, uid, lid?, save}` → edited document |
 | POST | `/workflows/compile` | `{ir, tid?}` → compile a hand-written IR (no LLM) |
 | POST | `/workflows/validate` | `{document, tid?}` → structural validation |
 | POST | `/workflows/save` | `{document, tid, uid}` → validate + insert |
@@ -51,7 +51,23 @@ Environment (all optional): `LLM_MODEL` (default `gpt-4o-mini`), `LLM_BASE_URL`
 | GET | `/catalog/blocks` | block palette |
 | GET | `/catalog/spreadsheets?tid=` | tenant spreadsheet catalog (names + columns) |
 | GET | `/catalog/functions?tid=` | LiveCloud functions + child workflows |
+| GET | `/catalog/livespace?tid=&lid=` | app context the LLM sees: identity, roles, spreadsheets |
 | GET | `/healthz` | health check |
+
+Pass `lid` when the workflow targets a specific app (LiveSpace): the LLM then
+receives the app's name/short_code, its role names, and all of its spreadsheets
+instead of a lexically retrieved subset — required for correct
+`addusertolivespace` / app-scoped configuration.
+
+## Block awareness
+
+The prompt always carries the complete block catalog, grouped by capability
+layer (platform users, app membership, spreadsheets, integrations,
+communication, control). Blocks documented in `app/catalog/block_docs.json`
+(config contracts harvested from the PHP block classes) additionally list their
+real required/optional `block_properties` keys and outputs. The model must emit
+a `plan` array (requirement → block) before steps; a coverage check feeds
+"planned but missing" blocks back through the repair loop.
 
 ## Tests
 

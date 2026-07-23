@@ -1,0 +1,98 @@
+{
+  "_comment": "Detailed per-block documentation overlaying palette.json. Harvested from the PHP block classes (sys/workflow/block/*.php), platform-metadata schemas, and real VizWorkflow documents. 'required'/'optional' are block_properties keys (put them in the IR step's 'config', except where the IR has a dedicated field). 'outputs' are fields referenceable as {Label.field} afterwards.",
+  "blocks": {
+    "adduser": {
+      "usage": "Creates a platform user account, or updates it if the email already exists (upsert by email). This is THE block for onboarding a person to the platform itself. New users get a password-reset hash; set sendmail='on' to send the welcome/invite email automatically.",
+      "required": { "email": "user email", "name": "display name", "systemrole": "system role/group id; OR use systemRoleName with the role's name" },
+      "optional": { "systemRoleName": "system role name (looked up if systemrole empty)", "sendmail": "'on' to send welcome email with set-password link", "fedId": "federation/SSO id", "group": "customer id", "customerName": "customer name (alternative to group)", "dashboard": "landing dashboard", "dashboardShortCode": "landing dashboard short code" },
+      "outputs": ["uid", "email", "hash", "status", "username"]
+    },
+    "getuser": {
+      "usage": "Fetches platform user details by email. Use to check whether a user already exists before onboarding.",
+      "required": { "email": "user email" },
+      "outputs": ["uid", "email", "fname", "flags"]
+    },
+    "deactivateuser": {
+      "usage": "Deactivates a platform user account.",
+      "required": { "email": "user email" },
+      "outputs": ["Status"]
+    },
+    "addusertolivespace": {
+      "usage": "Grants an existing platform user access to an app (livespace) with a role. This is THE block for app membership — separate from account creation (adduser) and from app data rows (insertssdata). Fails if the user owns the app or already has the role.",
+      "required": { "email": "user email", "lid": "numeric app/livespace id; OR livespace_shortcode", "livespacerole": "role id; OR use livespaceroleName with the role's name" },
+      "optional": { "livespace_shortcode": "app short code (alternative to lid)", "livespaceroleName": "role name (looked up if livespacerole empty)" },
+      "outputs": ["Status"]
+    },
+    "removeuserfromlivespace": {
+      "usage": "Revokes a user's access to an app (livespace).",
+      "required": { "email": "user email", "lid": "numeric app id", "role": "role id to remove" },
+      "outputs": ["Status"]
+    },
+    "getuserlivespaces": {
+      "usage": "Lists the apps (livespaces) a user is a member of.",
+      "required": { "email": "user email" },
+      "outputs": ["lid", "name", "roleName"]
+    },
+    "getlivespacemembers": {
+      "usage": "Lists members of an app (livespace).",
+      "required": { "lid": "numeric app id" },
+      "outputs": ["email", "name", "roleName"]
+    },
+    "setlanding": {
+      "usage": "Sets the landing page/dashboard a user sees after login.",
+      "required": { "email": "user email" },
+      "optional": { "dashboard": "dashboard id", "dashboardShortCode": "dashboard short code" }
+    },
+    "sendmail": {
+      "usage": "Sends an email via the platform SMTP. Use for custom notifications beyond the automatic adduser welcome mail.",
+      "required": { "mail_to": "recipient (template allowed)", "mail_subject": "subject", "mail_content": "body (HTML/templates allowed)" },
+      "optional": { "mail_from": "sender", "attachment": "file reference", "mail_cc": "cc list" }
+    },
+    "notify": {
+      "usage": "Sends an internal platform notification to a user.",
+      "required": { "notify_type": "notification type", "message": "notification text" }
+    },
+    "backgroundworkflow": {
+      "usage": "Fires another workflow asynchronously (does not wait). Use for slow side-effects like bulk mails.",
+      "required": { "wfShortCode": "child workflow short_code" },
+      "optional": { "workflowParameters": "parameters passed to the child" }
+    },
+    "date": {
+      "usage": "Date parse/format/arithmetic.",
+      "optional": { "input_date": "input value or {Ref}", "informat": "input format", "outformat": "output format", "operator": "+/- amount", "time": "time component" },
+      "outputs": ["value"]
+    },
+    "math": {
+      "usage": "Evaluates a math expression.",
+      "optional": { "math_input": "expression, may embed {Ref}", "key": "output key name" },
+      "outputs": ["value"]
+    },
+    "string": {
+      "usage": "String operations (regex extract, substring).",
+      "optional": { "input_string": "input value or {Ref}", "regex": "pattern", "offset": "substring offset", "key": "output key name" },
+      "outputs": ["value"]
+    },
+    "arrayextract": {
+      "usage": "Extracts values from data via regex/selector into an array.",
+      "optional": { "data_selector": "input {Ref}", "regex": "pattern", "output_key": "output key name", "sort_order": "none|asc|desc" },
+      "outputs": ["value"]
+    },
+    "customoutput": {
+      "usage": "Formats the workflow's API response.",
+      "optional": { "outputDataType": "json|text|html", "headerStatusCode": "HTTP status code" }
+    },
+    "downloadasfile": {
+      "usage": "Returns data to the caller as a downloadable file.",
+      "optional": { "download-filename": "file name", "download-filetype": "csv|xlsx|pdf", "resultset_array": "data {Ref}" }
+    },
+    "uniquevalidator": {
+      "usage": "Validates unique constraints across data before inserts.",
+      "optional": { "permission": "permission key", "permissionfinished": "post-check key" }
+    },
+    "processfile": {
+      "usage": "Parses an uploaded file (CSV/Excel) into rows.",
+      "optional": { "fid": "file id or {Ref}", "rows": "row limit", "file_name": "name", "mime_type": "type" },
+      "outputs": ["rows"]
+    }
+  }
+}

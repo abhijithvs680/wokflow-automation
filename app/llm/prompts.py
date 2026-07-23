@@ -15,6 +15,39 @@ SYSTEM_PROMPT = """You are a workflow architect for the Vizru low-code platform.
 natural-language use case into a JSON workflow IR (intermediate representation).
 Output ONLY valid JSON matching the provided schema. No prose.
 
+## How to think (mandatory)
+Before writing steps, fill the `plan` array: decompose the request into EVERY
+distinct requirement and name the block type for each. Work top-down through
+the platform's capability layers — a request usually spans several:
+
+1. PLATFORM layer — user accounts and identity. Creating/inviting a person =
+   `adduser` (upserts the account, can send the welcome email). Checking
+   existence = `getuser`. Disabling = `deactivateuser`.
+2. APP layer — membership and permissions. Giving a user access to an app
+   (livespace) with a role = `addusertolivespace`. Removing = `removeuserfromlivespace`.
+   Listing = `getuserlivespaces` / `getlivespacemembers`.
+3. DATA layer — the app's spreadsheets. Reading = `ssdatafilter`; writing =
+   `insertssdata` / `updatessdata` / `insertorupdatessdata`. A spreadsheet row is
+   NOT a user account: writing a "Users" spreadsheet row does not create a login,
+   and creating a login does not write app data. Complete flows usually need both.
+4. INTEGRATION layer — `livecloudfunction` (external endpoints), `executeworkflow` /
+   `backgroundworkflow` (child workflows), `genericget`/`genericpost` HTTP.
+5. COMMUNICATION layer — `sendmail`, `notify`, `realtimepush`, `twilio`.
+6. CONTROL layer — `condition` checks, `setvariable` outputs, `clearoutput`,
+   utility blocks (`date`, `math`, `string`, `arrayextract`).
+
+Selection rules:
+- Cover ALL layers the request touches. "Onboard a user to an app" = platform
+  account (adduser) + app membership (addusertolivespace) + any app data rows
+  (insertssdata) + duplicate checks (getuser / ssdatafilter+condition) + response.
+- Choose blocks by capability from the catalog below — never substitute a
+  spreadsheet write for a platform/app action or vice versa.
+- Add the checks a careful builder would: does the entity already exist? did the
+  action succeed ({httpcode}, {filter-count})? Always give failure branches a
+  terminal step with a clear error message.
+- Every plan item must map to at least one step. Do not leave requirements
+  uncovered.
+
 ## IR rules
 - `trigger`: how the workflow starts. Use "genericpost" for API-triggered flows
   (external callers POST JSON; fields readable as {Entry.field}), or
@@ -49,11 +82,15 @@ Output ONLY valid JSON matching the provided schema. No prose.
   (HTTP headers/params as shown in the catalog). Response fields: {Label.field};
   check {httpcode} in a following condition.
 - executeworkflow: `child_workflow` = child workflow name from catalog.
-- sendmail: use `config` with mail_to, mail_subject, mail_content (templates allowed).
 - customoutput: `config` with outputDataType (usually "json").
 - clearoutput: insert between a condition branch and the next data-producing block
   to clear accumulated output (common platform pattern; no config needed).
-- Other blocks: put raw properties in `config`.
+- ALL other blocks (adduser, addusertolivespace, sendmail, notify, date, ...):
+  put their config keys in `config`, using the exact key names listed in the
+  block catalog (e.g. adduser -> config: {email, name, systemRoleName, sendmail};
+  addusertolivespace -> config: {email, lid, livespaceroleName}). Values may use
+  {Ref} templates. Use the LiveSpace context section (lid, short_code, role
+  names) for app-scoped config values when provided.
 
 ## Conventions observed in production workflows
 - API flows: genericpost Entry -> lookups/filters -> conditions -> actions ->
@@ -63,14 +100,25 @@ Output ONLY valid JSON matching the provided schema. No prose.
 """
 
 # Gold few-shot: compact version of the real HMS_GenerateDoctorOTP flow.
+# NOTE: this demonstrates the IR FORMAT only — block choice must always come
+# from the capability layers + catalog, not from this example.
 FEW_SHOT_USER = (
     "Create a workflow: user posts a phone number; look up the user in the "
     "'Doctors' spreadsheet by PhoneNumber; if not found return an error; if "
     "found generate a 4-digit OTP, store it on the user's row (Status=Created), "
-    "and return success."
+    "and return success. (FORMAT EXAMPLE — your block selection must follow the "
+    "capability layers, not copy this example.)"
 )
 
 FEW_SHOT_IR = {
+    "plan": [
+        "DATA: look up doctor by phone in 'Doctors' spreadsheet -> ssdatafilter",
+        "CONTROL: branch on found/not-found -> condition on {filter-count}",
+        "CONTROL: generate 4-digit OTP -> setvariable with helper",
+        "DATA: store OTP on the user's row -> updatessdata",
+        "CONTROL: success response -> setvariable (terminal)",
+        "CONTROL: not-found error response -> setvariable (terminal)",
+    ],
     "name": "GenerateDoctorOTP",
     "description": "Send OTP to a doctor by phone",
     "trigger": {"type": "genericpost", "label": "Entry", "auth_required": False},
@@ -106,10 +154,24 @@ same labels, same config — so unchanged blocks keep their identity.
 def build_context(block_types: list[str] | None,
                   spreadsheets: list[dict],
                   functions: list[dict],
-                  child_workflows: list[dict]) -> str:
-    parts = ["## Available blocks", cat.prompt_catalog(block_types)]
+                  child_workflows: list[dict],
+                  livespace: dict | None = None) -> str:
+    parts = ["## Available blocks (the complete catalog — choose by capability)",
+             cat.prompt_catalog(block_types)]
+    if livespace:
+        parts.append("\n## LiveSpace (app) context — the target app for this workflow")
+        parts.append(f"- name: \"{livespace['name']}\", lid: {livespace['lid']}, "
+                     f"short_code: \"{livespace['short_code']}\"")
+        parts.append("- use this lid / short_code for app-scoped config "
+                     "(addusertolivespace.lid, livespace_shortcode, getlivespacemembers.lid, ...)")
+        if livespace.get("roles"):
+            parts.append("- livespace role names (for livespaceroleName): "
+                         + ", ".join(f'"{r}"' for r in livespace["roles"]))
     if spreadsheets:
-        parts.append("\n## Tenant spreadsheets (use exact names & column names)")
+        header = ("\n## Spreadsheets in this app (use exact names & column names)"
+                  if livespace else
+                  "\n## Tenant spreadsheets (use exact names & column names)")
+        parts.append(header)
         for ss in spreadsheets:
             cols = ", ".join(f"{c['name']}({c['type']})" for c in ss["columns"])
             parts.append(f"- \"{ss['name']}\": columns [{cols}]")

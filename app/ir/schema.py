@@ -59,6 +59,15 @@ class IRTrigger(BaseModel):
 
 
 class WorkflowIR(BaseModel):
+    plan: list[str] = Field(
+        default_factory=list,
+        description=(
+            "REQUIRED before steps: decompose the request into every distinct "
+            "requirement (platform-level actions, app-level actions, data writes, "
+            "checks, notifications, error paths) and name the block type chosen "
+            "for each. Every plan item must be covered by the steps."
+        ),
+    )
     name: str
     description: str = ""
     trigger: IRTrigger = Field(default_factory=IRTrigger)

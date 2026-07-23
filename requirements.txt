@@ -4,5 +4,5 @@ pydantic>=2.7
 pymongo>=4.8
 PyMySQL>=1.1
 openai>=1.40
-pyjson5>=1.6
+json5>=0.9
 pytest>=8.0

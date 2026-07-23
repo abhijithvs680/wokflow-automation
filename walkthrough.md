@@ -107,6 +107,39 @@ NL prompt ──▶ tenant catalogs + retrieval ──▶ LLM → compact IR ─
     warning (not an error) for duplicates, since the platform itself tolerates
     them.
 
+## Round 2: full block awareness (post-review improvements)
+
+Problem observed: "onboard a user to an app" produced only a spreadsheet
+check+insert. The model saw the full block list but had no reason (or knowledge)
+to use platform-level blocks. Three root causes, three grounded fixes:
+
+1. **Thin block knowledge.** The metadata JSON schemas don't carry real config
+   contracts, so the model avoided blocks it couldn't configure.
+   Fix: `app/catalog/block_docs.json` — per-block usage, required/optional
+   `block_properties` keys, and output fields harvested from the PHP block
+   classes (`userManagementBlocks.php` etc., e.g. `adduser` requires
+   email+name+systemrole/systemRoleName, supports `sendmail='on'`;
+   `addusertolivespace` accepts `lid` or `livespace_shortcode` and
+   `livespacerole` or `livespaceroleName`). Rendered into the always-included,
+   category-grouped catalog (`prompt_catalog`). Whole prompt stays ~4.5k tokens.
+2. **Sample-driven selection.** The single few-shot biased everything toward
+   spreadsheet flows. Fix: capability-layer reasoning in the system prompt
+   (PLATFORM / APP / DATA / INTEGRATION / COMMUNICATION / CONTROL) with explicit
+   rules ("a spreadsheet row is NOT a user account"), a mandatory `plan` field
+   in the IR (requirement decomposition -> block choice, cheap chain-of-thought
+   in the same call), and the few-shot re-framed as format-only. A plan-coverage
+   check in `flows._try_build` turns "planned block never used" into a
+   repair-loop error, so incomplete workflows self-correct.
+3. **No app identity context.** With `lid`, the service now sends real
+   livespace context: name/short_code from `viz_livespace` (MySQL), role names
+   from `t-livespaces-roles` (Mongo, for `livespaceroleName`), and ALL of the
+   app's spreadsheets (up to 15) instead of lexical top-5 guessing. Exposed for
+   inspection at `GET /catalog/livespace?tid=&lid=`.
+
+Environment note: `pyjson5`'s native DLL became blocked by a Windows
+Application Control policy, so the test fixture parser switched to the
+pure-Python `json5` package (requirements.txt updated).
+
 ## Known limitations / next steps
 
 - **Live-DB paths are untested here** (no running Mongo/MySQL in this
